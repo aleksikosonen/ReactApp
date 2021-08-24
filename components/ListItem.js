@@ -6,7 +6,7 @@ import {uploadsUrl} from "../utils/variables";
 const ListItem = ({singleMedia}) => {
   return (
     <TouchableOpacity style={styles.block}>
-      <Image style={styles.image} source={{uri: uploadsUrl + singleMedia.filename}} />
+      <Image style={styles.image} source={{uri: uploadsUrl + singleMedia.thumbnails?.w160}} />
       <View style={{flex: 1, paddingRight: 10}}>
         <Text style={{fontWeight: 'bold', fontSize: 16}}>
           {singleMedia.title}

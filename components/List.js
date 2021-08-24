@@ -5,14 +5,18 @@ import {baseUrl} from "../utils/variables";
 
 const List = (props) => {
   const [mediaArray, setMediaArray] = useState([]);
-  const url = baseUrl;
 
   useEffect(() => {
     const loadMedia = async () => {
       try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setMediaArray(json);
+        const response = await fetch(baseUrl + 'media');
+        const mediaIlmanThumbnailia = await response.json();
+        const kaikkiTiedot = mediaIlmanThumbnailia.map(async (media) => {
+          const response =  await fetch(baseUrl + 'media/' + media.file_id);
+          const tiedosto = await response.json();
+          return tiedosto;
+        });
+        setMediaArray(await Promise.all(kaikkiTiedot));
       } catch (e) {
         console.log(e.message);
       }
