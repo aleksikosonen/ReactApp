@@ -1,14 +1,31 @@
-import {StatusBar} from 'expo-status-bar';
+import {ImageBackground, StatusBar, StatusBarIOS, Text, View} from 'react-native';
 import React from 'react';
 import List from './components/List';
+import * as Icon from 'react-native-feather';
 
 import {SafeAreaView, StyleSheet} from 'react-native';
+
+const image = {uri: 'https://i.ytimg.com/vi/H-WEhug-up8/maxresdefault.jpg'};
 
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <List />
-      <StatusBar style="auto" />
+      <StatusBar barStyle={"light-content"} />
+      <View style={styles.topContainer}>
+        <ImageBackground
+          source={image}
+          resizeMode={'cover'}
+          style={styles.image}
+          imageStyle={styles.imgStyle}
+        ></ImageBackground>
+        <View style={styles.text}>
+          <Text style={styles.font}>Kodittomat kissat</Text>
+        </View>
+        <Icon.Settings style={styles.icon} />
+      </View>
+      <View style={styles.bottomContainer}>
+        <List style={styles.bottomContainer} />
+      </View>
     </SafeAreaView>
   );
 };
@@ -16,10 +33,46 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'black',
+  },
+  bottomContainer: {
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  topContainer: {
+    flex: 2,
+  },
+  image: {
+    flex: 1,
+    marginBottom: 20,
+  },
+  text: {
+    height: 50,
+    width: 250,
+    backgroundColor: 'pink',
+    position: 'absolute',
+    bottom: 40,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomRightRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  font: {
+    color: '#3D405B',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  imgStyle: {
+    flex: 1,
+    borderBottomRightRadius: 50,
+  },
+  icon: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
 });
 
