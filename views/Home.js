@@ -1,16 +1,22 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import {ImageBackground, SafeAreaView, StatusBar, StyleSheet, Text, View} from "react-native";
-import * as Icon from "react-native-feather";
-import List from "../components/List";
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+  ImageBackground,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import * as Icon from 'react-native-feather';
+import List from '../components/List';
 
 const image = {uri: 'https://i.ytimg.com/vi/H-WEhug-up8/maxresdefault.jpg'};
-
 
 const Home = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={'light-content'} />
       <View style={styles.topContainer}>
         <ImageBackground
           source={image}
@@ -27,8 +33,8 @@ const Home = ({navigation}) => {
         <List navigation={navigation} style={styles.bottomContainer} />
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 Home.propTypes = {
   navigation: PropTypes.object,

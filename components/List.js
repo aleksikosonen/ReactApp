@@ -6,8 +6,6 @@ import {useMedia} from '../hooks/ApiHooks';
 
 const List = ({navigation}) => {
   const {mediaArray} = useMedia();
-  console.log('media-array', mediaArray);
-
   return (
     <FlatList
       data={mediaArray}

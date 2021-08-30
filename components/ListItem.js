@@ -7,12 +7,12 @@ const ListItem = ({singleMedia, navigation}) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Single',
-          {
-            filename: singleMedia.filename,
-            title: singleMedia.title,
-            description: singleMedia.description,
-          });
+        navigation.navigate('Single', {
+          filename: singleMedia.filename,
+          title: singleMedia.title,
+          description: singleMedia.description,
+          time_added: singleMedia.time_added,
+        });
       }}
       style={styles.block}
     >
