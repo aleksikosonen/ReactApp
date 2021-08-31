@@ -37,7 +37,6 @@ const useMedia = () => {
 };
 
 const useLogin = () => {
-
   const login = async (userCredentials) => {
     const requestOptions = {
       method: 'POST',
@@ -60,16 +59,35 @@ const useUser = () => {
     const requestOptions = {
       headers: {
         'x-access-token': token,
-      }
-    }
+      },
+    };
     try {
       const userInfo = doFetch(baseUrl + 'users/user', requestOptions);
       return userInfo;
     } catch (e) {
-      console.log('checkToken error: ', e.message)
+      console.log('checkToken error: ', e.message);
     }
   };
-  return {checkToken};
+
+  const register = async (inputs) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: inputs,
+    };
+    try {
+      const response = await fetch(baseUrl + 'users', fetchOptions);
+      console.log(baseUrl + 'users', fetchOptions);
+      return await response.json();
+    } catch (e) {
+      console.log('ApiHooks register', e.message);
+      return false;
+    }
+  };
+
+  return {checkToken, register};
 };
 
 export {useMedia, useLogin, useUser};
