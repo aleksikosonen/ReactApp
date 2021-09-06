@@ -9,14 +9,7 @@ const RegisterForm = ({navigation}) => {
   const {inputs, handleInputChange} = useSignUpForm();
   const {register} = useUser();
   const doRegister = async () => {
-    const serverResponse = await register(
-      JSON.stringify({
-        username: inputs.username,
-        password: inputs.password,
-        email: inputs.email,
-        full_name: inputs.full_name,
-      })
-    );
+    const serverResponse = await register(JSON.stringify(inputs));
     if (serverResponse) {
       Alert.alert(serverResponse.message);
     } else {

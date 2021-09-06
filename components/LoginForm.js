@@ -15,10 +15,7 @@ const LoginForm = ({navigation}) => {
   const doLogin = async () => {
     try {
       const loginInfo = await login(
-        JSON.stringify({
-          username: inputs.username,
-          password: inputs.password,
-        })
+        JSON.stringify(inputs)
       );
       console.log('token login', loginInfo);
       await AsyncStorage.setItem('userToken', loginInfo.token);
