@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Alert, Button, View} from 'react-native';
+import {Alert, View} from 'react-native';
+import {Button} from 'react-native-elements';
 import FormTextInput from './FormTextInput';
 import useSignUpForm from '../hooks/RegisterHooks';
 import {useUser} from '../hooks/ApiHooks';

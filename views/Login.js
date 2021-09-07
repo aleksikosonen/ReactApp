@@ -2,12 +2,12 @@ import React, {useContext, useEffect} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
 } from 'react-native';
+import {Text} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -61,8 +61,13 @@ const Login = ({navigation}) => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          <Text>Login</Text>
+          <Text h3={true} style={styles.text}>
+            Login
+          </Text>
           <LoginForm navigation={navigation} />
+          <Text h3={true} style={styles.text}>
+            Register
+          </Text>
           <RegisterForm navigation={navigation} />
         </View>
       </TouchableWithoutFeedback>
@@ -74,11 +79,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   keyboardView: {
     flex: 1,
+  },
+  text: {
+    padding: 16,
+    alignSelf: 'center',
   },
 });
 

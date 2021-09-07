@@ -32,7 +32,6 @@ const useMedia = () => {
       return {};
     }
   };
-
   return {mediaArray, loadSingleMedia};
 };
 
@@ -79,7 +78,6 @@ const useUser = () => {
     };
     try {
       const response = await fetch(baseUrl + 'users', fetchOptions);
-      console.log(baseUrl + 'users', fetchOptions);
       return await response.json();
     } catch (e) {
       console.log('ApiHooks register', e.message);
@@ -90,4 +88,17 @@ const useUser = () => {
   return {checkToken, register};
 };
 
-export {useMedia, useLogin, useUser};
+const useTags = () => {
+  const getFilesByTag = async (tag) => {
+    try {
+      const avatar = await doFetch(baseUrl + 'tags/avatar_' + tag);
+      return avatar;
+    } catch (e) {
+      console.log('getFilesByTag: ', e.message);
+      return {};
+    }
+  }
+  return {getFilesByTag}
+};
+
+export {useMedia, useLogin, useUser, useTags};

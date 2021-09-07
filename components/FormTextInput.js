@@ -1,21 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {TextInput, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {Input} from 'react-native-elements';
 
 const FormTextInput = ({style, ...otherProps}) => {
-  return <TextInput style={[styles.textInput, style]} {...otherProps} />;
+  return <Input {...otherProps} />;
 };
 
-const styles = StyleSheet.create({
-  textInput: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-  },
-});
-
 FormTextInput.propTypes = {
-  style: PropTypes.styles,
+  style: PropTypes.object,
 };
 
 export default FormTextInput;

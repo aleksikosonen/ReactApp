@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
-import {Button, View} from 'react-native';
+import {View} from 'react-native';
+import {Button} from 'react-native-elements';
 import FormTextInput from './FormTextInput';
 import useLoginForm from '../hooks/LoginHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,12 +15,8 @@ const LoginForm = ({navigation}) => {
 
   const doLogin = async () => {
     try {
-      const loginInfo = await login(
-        JSON.stringify(inputs)
-      );
-      console.log('token login', loginInfo);
+      const loginInfo = await login(JSON.stringify(inputs));
       await AsyncStorage.setItem('userToken', loginInfo.token);
-      console.log(await AsyncStorage.getItem('userToken'));
       setUser(loginInfo.user);
       setIsLoggedIn(true);
     } catch (e) {
@@ -39,7 +36,7 @@ const LoginForm = ({navigation}) => {
         onChangeText={(txt) => handleInputChange('password', txt)}
         secureTextEntry={true}
       />
-      <Button title="Login!" onPress={doLogin} />
+      <Button title="Login!" onPress={doLogin} raised={true} />
     </View>
   );
 };

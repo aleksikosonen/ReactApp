@@ -16,7 +16,7 @@ const image = {uri: 'https://i.ytimg.com/vi/H-WEhug-up8/maxresdefault.jpg'};
 const Home = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
+      <StatusBar barStyle={'light-content'} />
       <View style={styles.topContainer}>
         <ImageBackground
           source={image}

@@ -1,22 +1,32 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
+import {ListItem as NEListItem, Avatar, View} from 'react-native-elements';
 
 const ListItem = ({singleMedia, navigation}) => {
   return (
     <TouchableOpacity
-      onPress={() => {navigation.navigate('Single', singleMedia)}}
-      style={styles.block}
+      onPress={() => {
+        navigation.navigate('Single', singleMedia);
+      }}
     >
-      <Image
-        style={styles.image}
-        source={{uri: uploadsUrl + singleMedia.thumbnails?.w160}}
-      />
-      <View style={{flex: 3, paddingRight: 10}}>
-        <Text style={styles.title}>{singleMedia.title}</Text>
-        <Text style={{color: '#F4F1DE'}}>{singleMedia.description}</Text>
-      </View>
+      <NEListItem bottomDivider containerStyle={{backgroundColor: '#3D405B'}}>
+        <Avatar
+          source={{uri: uploadsUrl + singleMedia.thumbnails?.w160}}
+          size={'large'}
+          rounded
+        />
+        <NEListItem.Content>
+          <NEListItem.Title style={{color: 'white'}}>
+            {singleMedia.title}
+          </NEListItem.Title>
+          <NEListItem.Subtitle style={{color: 'white'}}>
+            {singleMedia.description}
+          </NEListItem.Subtitle>
+        </NEListItem.Content>
+        <NEListItem.Chevron />
+      </NEListItem>
     </TouchableOpacity>
   );
 };
@@ -47,6 +57,7 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: 5,
   },
+  container: {},
 });
 
 export default ListItem;
