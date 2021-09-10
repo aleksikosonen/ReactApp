@@ -7,26 +7,44 @@ import {
   ActivityIndicator,
   StatusBar,
 } from 'react-native';
-import {Text, Image, Avatar, ListItem, Card} from 'react-native-elements';
+import {
+  Text,
+  Image,
+  Avatar,
+  ListItem,
+  Card,
+  Input,
+} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useTags} from '../hooks/ApiHooks';
+import {useTags, useUser} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
+import useEditForm from '../hooks/EditHooks';
 
 const Profile = ({navigation}) => {
   const {isLoggedIn, setIsLoggedIn, user} = useContext(MainContext);
   const [avatar, setAvatar] = useState('https://placekitten.com/400/400/');
-
+  const [email, setEmail] = useState(user.email);
+  const [updateProfile, setUpdateProfile] = useState(false);
   const {getFilesByTag} = useTags();
+  const {handleInputChange, inputs} = useEditForm();
+  const {updateUserEmail} = useUser();
 
   const logout = async () => {
     await AsyncStorage.clear();
     setIsLoggedIn(false);
   };
 
+  const editEmail = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    updateUserEmail(inputs, userToken);
+    setEmail(inputs.email);
+    setUpdateProfile(false);
+  };
+
   useEffect(() => {
     (async () => {
-      const userAvatar = await getFilesByTag(582);
+      const userAvatar = await getFilesByTag(user.user_id);
       setAvatar(uploadsUrl + userAvatar[0].filename);
     })();
   }, [user]);
@@ -43,10 +61,18 @@ const Profile = ({navigation}) => {
           style={styles.image}
           PlaceholderContent={<ActivityIndicator />}
         />
-        <ListItem>
-          <Avatar icon={{name: 'email', color: 'black'}} />
-          <Text>{user.email}</Text>
-        </ListItem>
+        {updateProfile ? (
+          <Input
+            autoCapitalize="none"
+            placeholder="New email"
+            onChangeText={(txt) => handleInputChange('email', txt)}
+          />
+        ) : (
+          <ListItem>
+            <Avatar icon={{name: 'email', color: 'black'}} />
+            <Text>{email}</Text>
+          </ListItem>
+        )}
         <ListItem>
           <Avatar icon={{name: 'user', type: 'font-awesome', color: 'black'}} />
           <Text>{user.full_name}</Text>
@@ -58,6 +84,22 @@ const Profile = ({navigation}) => {
           </ListItem.Content>
           <ListItem.Chevron />
         </ListItem>
+        {updateProfile ? (
+          <Button title={'Save changes'} onPress={editEmail} />
+        ) : (
+          <></>
+        )}
+        {updateProfile ? (
+          <Button
+            title={'Cancel'}
+            onPress={() => setUpdateProfile(!updateProfile)}
+          />
+        ) : (
+          <Button
+            title={'Edit'}
+            onPress={() => setUpdateProfile(!updateProfile)}
+          />
+        )}
       </Card>
     </SafeAreaView>
   );

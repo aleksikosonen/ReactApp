@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,7 +7,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import {Text} from 'react-native-elements';
+import {Button, Card, Text} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,9 +16,10 @@ import RegisterForm from '../components/RegisterForm';
 import LoginForm from '../components/LoginForm';
 
 const Login = ({navigation}) => {
-  const {setIsLoggedIn} = useContext(MainContext);
+  const {setIsLoggedIn, setUser} = useContext(MainContext);
   const {login} = useLogin();
   const {checkToken} = useUser();
+  const [registerFormToggle, setRegisterFormToggle] = useState(false);
   const doLogin = async () => {
     try {
       const loginInfo = await login(
@@ -44,7 +45,7 @@ const Login = ({navigation}) => {
     if (userToken) {
       const userInfo = await checkToken(userToken);
       if (userInfo.user_id) {
-        // TODO: save user info to maincontext
+        setUser(userInfo);
         setIsLoggedIn(true);
       }
     }
@@ -61,14 +62,26 @@ const Login = ({navigation}) => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          <Text h3={true} style={styles.text}>
-            Login
-          </Text>
-          <LoginForm navigation={navigation} />
-          <Text h3={true} style={styles.text}>
-            Register
-          </Text>
-          <RegisterForm navigation={navigation} />
+          {registerFormToggle ? (
+            <Card>
+              <Card.Divider />
+              <Card.Title h4>Register</Card.Title>
+              <RegisterForm navigation={navigation} />
+              <Button
+                title={'Already a user? Login!'}
+                onPress={() => setRegisterFormToggle(!registerFormToggle)}
+              />
+            </Card>
+          ) : (
+            <Card>
+              <Card.Title h4>Login</Card.Title>
+              <LoginForm navigation={navigation} />
+              <Button
+                title={'New user? Register here!'}
+                onPress={() => setRegisterFormToggle(!registerFormToggle)}
+              />
+            </Card>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

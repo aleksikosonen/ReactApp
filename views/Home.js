@@ -23,7 +23,7 @@ const Home = ({navigation}) => {
           resizeMode={'cover'}
           style={styles.image}
           imageStyle={styles.imgStyle}
-        ></ImageBackground>
+        />
         <View style={styles.text}>
           <Text style={styles.font}>Kodittomat kissat</Text>
         </View>

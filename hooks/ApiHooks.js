@@ -68,24 +68,59 @@ const useUser = () => {
     }
   };
 
-  const register = async (inputs) => {
+  const register = async (userCredentials) => {
+    const registerInputs = {
+      username: userCredentials.username,
+      password: userCredentials.password,
+      email: userCredentials.email,
+      full_name: userCredentials.full_name,
+    };
     const fetchOptions = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: inputs,
+      body: JSON.stringify(registerInputs),
     };
     try {
-      const response = await fetch(baseUrl + 'users', fetchOptions);
-      return await response.json();
+      const response = await doFetch(baseUrl + 'users', fetchOptions);
+      return response;
     } catch (e) {
       console.log('ApiHooks register', e.message);
       return false;
     }
   };
 
-  return {checkToken, register};
+  const checkUsernameAvailable = async (username) => {
+    try {
+      const userName = await doFetch(baseUrl + 'users/username/' + username);
+      console.log(userName.available);
+      return userName.available;
+    } catch (e) {
+      console.log('checkUsername error: ', e.message);
+    }
+  };
+
+  const updateUserEmail = async (email, token) => {
+    console.log(email);
+    const fetchOptions = {
+      method: 'PUT',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(email),
+    };
+    try {
+      const response = await fetch(baseUrl + 'users', fetchOptions);
+      return await response.json();
+    } catch (e) {
+      console.log('ApiHooks updateEmail', e.message);
+      return false;
+    }
+  };
+
+  return {checkToken, register, checkUsernameAvailable, updateUserEmail};
 };
 
 const useTags = () => {
@@ -97,8 +132,8 @@ const useTags = () => {
       console.log('getFilesByTag: ', e.message);
       return {};
     }
-  }
-  return {getFilesByTag}
+  };
+  return {getFilesByTag};
 };
 
 export {useMedia, useLogin, useUser, useTags};
