@@ -9,8 +9,9 @@ import Login from '../views/Login';
 import {MainContext} from '../contexts/MainContext';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {Icon} from 'react-native-elements';
+import Upload from '../views/Upload';
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const TabScreen = () => {
@@ -21,7 +22,7 @@ const TabScreen = () => {
         component={Home}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: () => <Icon name="home" color={'white'} size={25} />,
+          tabBarIcon: () => <Icon name="home" color={'black'} size={25} />,
         }}
       />
       <Tab.Screen
@@ -29,7 +30,17 @@ const TabScreen = () => {
         component={Profile}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: () => <Icon name="person" color={'white'} size={25} />,
+          tabBarIcon: () => <Icon name="person" color={'black'} size={25} />,
+        }}
+      />
+      <Tab.Screen
+        name={'Upload'}
+        component={Upload}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: () => (
+            <Icon name="cloud-upload" color={'black'} size={25} />
+          ),
         }}
       />
     </Tab.Navigator>

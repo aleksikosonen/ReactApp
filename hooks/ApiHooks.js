@@ -1,6 +1,7 @@
 import {baseUrl} from '../utils/variables';
 import {useEffect, useState} from 'react';
 import {doFetch} from '../utils/http';
+import axios from 'axios';
 
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
@@ -32,7 +33,25 @@ const useMedia = () => {
       return {};
     }
   };
-  return {mediaArray, loadSingleMedia};
+
+  const uploadMedia = async (formData, token) => {
+    try {
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'x-access-token': token,
+        },
+        data: formData,
+      };
+
+      const result = await axios(baseUrl + 'media/', requestOptions);
+      console.log('axios', result.data);
+    } catch (e) {
+      console.log('axios fail: ', e.message);
+    }
+  };
+
+  return {mediaArray, loadSingleMedia, loadMedia, uploadMedia};
 };
 
 const useLogin = () => {
