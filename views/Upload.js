@@ -1,17 +1,17 @@
 import React, {Component, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Alert, Platform, View} from 'react-native';
+import {ActivityIndicator, Alert, Platform, View} from 'react-native';
 import UploadForm from '../components/UploadForm';
 import {Button, Image} from 'react-native-elements';
 import useUploadForm from '../hooks/UploadHooks';
 import * as ImagePicker from 'expo-image-picker';
-import {useMedia} from "../hooks/ApiHooks";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useMedia} from '../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Upload = (props) => {
+const Upload = ({navigation}) => {
   const {inputs, handleInputChange} = useUploadForm();
   const {type, setType} = useState('');
-  const {uploadMedia} = useMedia();
+  const {uploadMedia, loading} = useMedia();
 
   const doUpload = async () => {
     console.log('Upload title', inputs);
@@ -20,16 +20,24 @@ const Upload = (props) => {
     formData.append('file', {uri: image.uri, name: filename, type});
     formData.append('title', inputs.title);
     formData.append('description', inputs.description);
-    const userToken = await AsyncStorage.getItem('userToken');
-    await uploadMedia(formData, userToken);
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      const result = await uploadMedia(formData, userToken);
+      if (result) {
+        navigation.navigate('Home');
+      }
+    } catch (e) {
+      console.log('doupload', e.message);
+    }
   };
 
-  const [image, setImage] = useState(require("../assets/adaptive-icon.png"));
+  const [image, setImage] = useState(require('../assets/adaptive-icon.png'));
 
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const {status} =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
           alert('Sorry, we need camera roll permissions to make this work!');
         }
@@ -49,26 +57,27 @@ const Upload = (props) => {
 
     if (!result.cancelled) {
       setImage({uri: result.uri});
-      setType(result.type)
+      setType(result.type);
     }
   };
 
   return (
     <View>
-      <Image
-        source={image}
-        style={{width: '100%', height: 200}}
-      />
-      <Button title="Select media" onPress={pickImage}/>
+      <Image source={image} style={{width: '100%', height: 200}} />
+      <Button title="Select media" onPress={pickImage} />
       <UploadForm
         title="Upload"
         handleSubmit={doUpload}
         handleInputChange={handleInputChange}
+        loading={loading}
       />
+      {loading && <ActivityIndicator />}
     </View>
   );
 };
 
-Upload.propTypes = {};
+Upload.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default Upload;

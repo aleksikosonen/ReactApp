@@ -6,7 +6,7 @@ import useUploadForm from '../hooks/UploadHooks';
 import {View} from 'react-native';
 
 const UploadForm = ({title, handleSubmit, handleInputChange}) => {
-  const {inputs, handleInputUpload} = useUploadForm();
+  const {inputs, handleInputUpload, loading} = useUploadForm();
   return (
     <>
       <Input
@@ -19,7 +19,7 @@ const UploadForm = ({title, handleSubmit, handleInputChange}) => {
         placeholder="description"
         onChangeText={(txt) => handleInputChange('description', txt)}
       />
-      <Button title={title} onPress={handleSubmit} />
+      <Button title={title} onPress={handleSubmit} loading={loading} />
     </>
   );
 };
@@ -28,6 +28,7 @@ UploadForm.propTypes = {
   title: PropTypes.string.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
 };
 
 export default UploadForm;

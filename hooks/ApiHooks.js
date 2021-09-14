@@ -5,12 +5,14 @@ import axios from 'axios';
 
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [update, setUpdate] = useState(0);
 
   useEffect(() => {
     (async () => {
       setMediaArray(await loadMedia());
     })();
-  }, []);
+  }, [update]);
 
   const loadMedia = async () => {
     try {
@@ -36,6 +38,7 @@ const useMedia = () => {
 
   const uploadMedia = async (formData, token) => {
     try {
+      setLoading(true);
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -43,15 +46,19 @@ const useMedia = () => {
         },
         data: formData,
       };
-
       const result = await axios(baseUrl + 'media/', requestOptions);
-      console.log('axios', result.data);
+      if (result) {
+        setUpdate(update + 1);
+      }
+      return result.data;
     } catch (e) {
-      console.log('axios fail: ', e.message);
+      throw new Error(e.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return {mediaArray, loadSingleMedia, loadMedia, uploadMedia};
+  return {mediaArray, loadSingleMedia, loadMedia, uploadMedia, loading};
 };
 
 const useLogin = () => {
