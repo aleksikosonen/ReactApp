@@ -1,4 +1,4 @@
-import {baseUrl} from '../utils/variables';
+import {appId, baseUrl} from '../utils/variables';
 import {useEffect, useState} from 'react';
 import {doFetch} from '../utils/http';
 import axios from 'axios';
@@ -16,13 +16,13 @@ const useMedia = () => {
 
   const loadMedia = async () => {
     try {
-      const mediaIlmanThumbnailia = await doFetch(baseUrl + 'media');
+      const mediaIlmanThumbnailia = await doFetch(baseUrl + 'tags/' + appId);
       const kaikkiTiedot = mediaIlmanThumbnailia.map(async (media) => {
         return await loadSingleMedia(media.file_id);
       });
       return await Promise.all(kaikkiTiedot);
     } catch (e) {
-      console.log('loadMedia: ', e.message);
+      console.log('apihooks loadMedia: ', e.message);
     }
   };
 
@@ -159,7 +159,26 @@ const useTags = () => {
       return {};
     }
   };
-  return {getFilesByTag};
+
+  const addTag = async (file_id, tag, token) => {
+    console.log(file_id, tag);
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({file_id, tag}),
+    };
+    try {
+      const tagInfo = await doFetch(baseUrl + 'tags', requestOptions);
+      return tagInfo;
+    } catch (e) {
+      console.log('addTag error: ', e.message);
+      throw new Error(e.message);
+    }
+  };
+  return {getFilesByTag, addTag};
 };
 
 export {useMedia, useLogin, useUser, useTags};

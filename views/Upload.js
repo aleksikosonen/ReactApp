@@ -5,13 +5,15 @@ import UploadForm from '../components/UploadForm';
 import {Button, Image} from 'react-native-elements';
 import useUploadForm from '../hooks/UploadHooks';
 import * as ImagePicker from 'expo-image-picker';
-import {useMedia} from '../hooks/ApiHooks';
+import {useMedia, useTags} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {appId} from '../utils/variables';
 
 const Upload = ({navigation}) => {
-  const {inputs, handleInputChange} = useUploadForm();
+  const {inputs, handleInputChange, refresh, uploadErrors} = useUploadForm();
   const {type, setType} = useState('');
   const {uploadMedia, loading} = useMedia();
+  const {addTag} = useTags();
 
   const doUpload = async () => {
     console.log('Upload title', inputs);
@@ -23,8 +25,22 @@ const Upload = ({navigation}) => {
     try {
       const userToken = await AsyncStorage.getItem('userToken');
       const result = await uploadMedia(formData, userToken);
-      if (result) {
-        navigation.navigate('Home');
+      const tagResult = await addTag(result.file_id, appId, userToken);
+      if (tagResult.message) {
+        Alert.alert(
+          'Upload',
+          'File uploaded',
+          [
+            {
+              text: 'Ok',
+              onPress: () => {
+                doRefresh();
+                navigation.navigate('Home');
+              },
+            },
+          ],
+          {cancelable: false}
+        );
       }
     } catch (e) {
       console.log('doupload', e.message);
@@ -61,6 +77,12 @@ const Upload = ({navigation}) => {
     }
   };
 
+  const doRefresh = () => {
+    console.log('Upload js doReset');
+    setImage(null);
+    refresh();
+  };
+
   return (
     <View>
       <Image source={image} style={{width: '100%', height: 200}} />
@@ -70,7 +92,10 @@ const Upload = ({navigation}) => {
         handleSubmit={doUpload}
         handleInputChange={handleInputChange}
         loading={loading}
+        uploadErrors={uploadErrors}
+        source={image}
       />
+      <Button title={'Refresh'} onPress={doRefresh} />
       {loading && <ActivityIndicator />}
     </View>
   );
