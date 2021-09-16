@@ -1,12 +1,13 @@
 import {appId, baseUrl} from '../utils/variables';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
+import {MainContext} from '../contexts/MainContext';
 import {doFetch} from '../utils/http';
 import axios from 'axios';
 
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [update, setUpdate] = useState(0);
+  const {update} = useContext(MainContext);
 
   useEffect(() => {
     (async () => {
@@ -44,14 +45,12 @@ const useMedia = () => {
         headers: {
           'x-access-token': token,
         },
-        data: formData,
+        body: formData,
       };
-      const result = await axios(baseUrl + 'media/', requestOptions);
-      if (result) {
-        setUpdate(update + 1);
-      }
-      return result.data;
+      const result = await doFetch(baseUrl + 'media/', requestOptions);
+      return result;
     } catch (e) {
+      console.log('uploadMedia error', e);
       throw new Error(e.message);
     } finally {
       setLoading(false);

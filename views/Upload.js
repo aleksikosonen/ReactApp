@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {ActivityIndicator, Alert, Platform, View} from 'react-native';
 import UploadForm from '../components/UploadForm';
@@ -8,12 +8,14 @@ import * as ImagePicker from 'expo-image-picker';
 import {useMedia, useTags} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {appId} from '../utils/variables';
+import {MainContext} from '../contexts/MainContext';
 
 const Upload = ({navigation}) => {
   const {inputs, handleInputChange, refresh, uploadErrors} = useUploadForm();
   const {type, setType} = useState('');
   const {uploadMedia, loading} = useMedia();
   const {addTag} = useTags();
+  const {update, setUpdate} = useContext(MainContext);
 
   const doUpload = async () => {
     console.log('Upload title', inputs);
@@ -29,11 +31,12 @@ const Upload = ({navigation}) => {
       if (tagResult.message) {
         Alert.alert(
           'Upload',
-          'File uploaded',
+          result.message,
           [
             {
               text: 'Ok',
               onPress: () => {
+                setUpdate(update + 1);
                 doRefresh();
                 navigation.navigate('Home');
               },
@@ -69,8 +72,6 @@ const Upload = ({navigation}) => {
       quality: 0.5,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
       setImage({uri: result.uri});
       setType(result.type);
@@ -78,7 +79,6 @@ const Upload = ({navigation}) => {
   };
 
   const doRefresh = () => {
-    console.log('Upload js doReset');
     setImage(null);
     refresh();
   };
@@ -94,6 +94,7 @@ const Upload = ({navigation}) => {
         loading={loading}
         uploadErrors={uploadErrors}
         source={image}
+        inputs={inputs}
       />
       <Button title={'Refresh'} onPress={doRefresh} />
       {loading && <ActivityIndicator />}

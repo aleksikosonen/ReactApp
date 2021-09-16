@@ -4,7 +4,7 @@ import {Button, Input} from 'react-native-elements';
 import useUploadForm from '../hooks/UploadHooks';
 import Upload from '../views/Upload';
 
-const UploadForm = ({title, handleSubmit, handleInputChange, loading, uploadErrors, image}) => {
+const UploadForm = ({title, handleSubmit, handleInputChange, loading, uploadErrors, image, inputs}) => {
   //const {uploadErrors} = useUploadForm();
   return (
     <>
@@ -13,12 +13,14 @@ const UploadForm = ({title, handleSubmit, handleInputChange, loading, uploadErro
         placeholder="title"
         onChangeText={(txt) => handleInputChange('title', txt)}
         errorMessage={uploadErrors.title}
+        value={inputs.title}
       />
       <Input
         autoCapitalize="none"
         placeholder="description"
         onChangeText={(txt) => handleInputChange('description', txt)}
         errorMessage={uploadErrors.description}
+        value={inputs.description}
       />
       <Button
         title={title}

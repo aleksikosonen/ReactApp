@@ -28,10 +28,7 @@ const Login = ({navigation}) => {
           password: '',
         })
       );
-      console.log('token login', loginInfo);
       await AsyncStorage.setItem('userToken', loginInfo.token);
-      console.log(await AsyncStorage.getItem('userToken'));
-      // TODO: Save user info (logininfo.user) to maincontext
       setIsLoggedIn(true);
     } catch (e) {
       console.log('doLogin error', e.message);
@@ -40,13 +37,15 @@ const Login = ({navigation}) => {
 
   const getToken = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
-    console.log('token', userToken);
-
     if (userToken) {
-      const userInfo = await checkToken(userToken);
-      if (userInfo.user_id) {
-        setUser(userInfo);
-        setIsLoggedIn(true);
+      try {
+        const userInfo = await checkToken(userToken);
+        if (userInfo.user_id) {
+          setUser(userInfo);
+          setIsLoggedIn(true);
+        }
+      } catch (e) {
+        console.log('getToken', e.message);
       }
     }
   };
