@@ -3,11 +3,12 @@ import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {doFetch} from '../utils/http';
 import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const useMedia = () => {
+const useMedia = (ownFiles = false) => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {update} = useContext(MainContext);
+  const {update, user} = useContext(MainContext);
 
   useEffect(() => {
     (async () => {
@@ -17,11 +18,16 @@ const useMedia = () => {
 
   const loadMedia = async () => {
     try {
-      const mediaIlmanThumbnailia = await doFetch(baseUrl + 'tags/' + appId);
+      let mediaIlmanThumbnailia = await doFetch(baseUrl + 'tags/' + appId);
+      if (ownFiles) {
+        mediaIlmanThumbnailia = mediaIlmanThumbnailia.filter(
+          (item) => item.user_id === user.user_id
+        );
+      }
       const kaikkiTiedot = mediaIlmanThumbnailia.map(async (media) => {
         return await loadSingleMedia(media.file_id);
       });
-      return await Promise.all(kaikkiTiedot);
+      return Promise.all(kaikkiTiedot);
     } catch (e) {
       console.log('apihooks loadMedia: ', e.message);
     }
@@ -57,7 +63,47 @@ const useMedia = () => {
     }
   };
 
-  return {mediaArray, loadSingleMedia, loadMedia, uploadMedia, loading};
+  const modifyMedia = async (data, token, id) => {
+    try {
+      setLoading(true);
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'x-access-token': token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      };
+      const result = await doFetch(baseUrl + 'media/' + id, requestOptions);
+      return result;
+    } catch (e) {
+      console.log('modifymedia error', e);
+      throw new Error(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteMedia = async (id, userToken) => {
+    try {
+      setLoading(true);
+      const requestOptions = {
+        method: 'DELETE',
+        headers: {
+          'x-access-token': userToken,
+        },
+      };
+      const result = await doFetch(baseUrl + 'media/' + id, requestOptions);
+      return result;
+    } catch (e) {
+      console.log('deleteMedia error', e);
+      throw new Error(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {mediaArray, loadSingleMedia, loadMedia, uploadMedia, loading, deleteMedia, modifyMedia};
 };
 
 const useLogin = () => {

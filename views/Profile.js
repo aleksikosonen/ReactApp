@@ -77,6 +77,20 @@ const Profile = ({navigation}) => {
           <Avatar icon={{name: 'user', type: 'font-awesome', color: 'black'}} />
           <Text>{user.full_name}</Text>
         </ListItem>
+
+        <ListItem
+          bottomDivider
+          onPress={() => {
+            navigation.navigate('My Files');
+          }}
+        >
+          <Avatar icon={{name: 'logout', color: 'black'}} />
+          <ListItem.Content>
+            <ListItem.Title>My Files</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron />
+        </ListItem>
+
         <ListItem bottomDivider onPress={logout}>
           <Avatar icon={{name: 'logout', color: 'black'}} />
           <ListItem.Content>
@@ -116,6 +130,8 @@ const styles = StyleSheet.create({
   image: {width: '100%', height: undefined, aspectRatio: 1},
 });
 
-Profile.propTypes = {};
+Profile.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default Profile;

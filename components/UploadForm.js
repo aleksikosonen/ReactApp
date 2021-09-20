@@ -41,6 +41,7 @@ UploadForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   loading: PropTypes.bool,
+  inputs: PropTypes.object.isRequired,
 };
 
 export default UploadForm;

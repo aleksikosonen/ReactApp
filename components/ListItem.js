@@ -1,10 +1,21 @@
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
-import {ListItem as NEListItem, Avatar, View} from 'react-native-elements';
+import {
+  ListItem as NEListItem,
+  Avatar,
+  View,
+  Button,
+} from 'react-native-elements';
+import {useMedia} from '../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {MainContext} from '../contexts/MainContext';
 
-const ListItem = ({singleMedia, navigation}) => {
+const ListItem = ({singleMedia, navigation, enableEdit}) => {
+  const {deleteMedia} = useMedia();
+  const {update, setUpdate} = useContext(MainContext);
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -24,6 +35,34 @@ const ListItem = ({singleMedia, navigation}) => {
           <NEListItem.Subtitle style={{color: 'white'}}>
             {singleMedia.description}
           </NEListItem.Subtitle>
+          {enableEdit && (
+            <>
+              <Button
+                title={'Edit'}
+                onPress={() => {
+                  navigation.navigate('Modify', {singleMedia, navigation});
+                }}
+              />
+              <Button
+                title={'Delete'}
+                onPress={async () => {
+                  try {
+                    const userToken = await AsyncStorage.getItem('userToken');
+                    const response = await deleteMedia(
+                      singleMedia.file_id,
+                      userToken
+                    );
+                    console.log('Delete', response);
+                    if (response.message) {
+                      setUpdate(update + 1);
+                    }
+                  } catch (e) {
+                    console.log('Listitem delete failed', e.message);
+                  }
+                }}
+              />
+            </>
+          )}
         </NEListItem.Content>
         <NEListItem.Chevron />
       </NEListItem>
@@ -34,6 +73,7 @@ const ListItem = ({singleMedia, navigation}) => {
 ListItem.propTypes = {
   singleMedia: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
+  enableEdit: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({

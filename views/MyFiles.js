@@ -1,11 +1,11 @@
-import {FlatList} from 'react-native';
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import ListItem from './ListItem';
+import {FlatList, View} from 'react-native';
 import {useMedia} from '../hooks/ApiHooks';
+import ListItem from '../components/ListItem';
 
-const List = ({navigation}) => {
-  const {mediaArray} = useMedia();
+const MyFiles = ({navigation}) => {
+  const {mediaArray} = useMedia(true);
   return (
     <FlatList
       data={mediaArray.reverse()}
@@ -14,15 +14,13 @@ const List = ({navigation}) => {
         <ListItem
           navigation={navigation}
           singleMedia={item}
-          enableEdit={false}
+          enableEdit={true}
         />
       )}
     />
   );
 };
 
-List.propTypes = {
-  navigation: PropTypes.object,
-};
+MyFiles.propTypes = {};
 
-export default List;
+export default MyFiles;
