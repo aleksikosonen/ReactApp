@@ -172,6 +172,22 @@ const useUser = () => {
     }
   };
 
+  const getUserInfo = async (id, token) => {
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const userName = await doFetch(baseUrl + 'users/' + id, fetchOptions);
+      return userName;
+    } catch (e) {
+      console.log('getUsername error: ', e.message);
+    }
+  };
+
   const updateUserEmail = async (email, token) => {
     console.log(email);
     const fetchOptions = {
@@ -191,7 +207,7 @@ const useUser = () => {
     }
   };
 
-  return {checkToken, register, checkUsernameAvailable, updateUserEmail};
+  return {checkToken, register, checkUsernameAvailable, updateUserEmail, getUserInfo};
 };
 
 const useTags = () => {
